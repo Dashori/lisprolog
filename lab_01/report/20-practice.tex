@@ -1,0 +1,162 @@
+\section{Практические задания}
+
+\subsection{Задание \textnumero1}
+
+Сдано на отдельном листе.
+
+\subsection{Задание \textnumero2}
+
+Используя только функции CAR и CDR, написать выражения, возвращающие:
+\begin{enumerate}[label*=\arabic*.]
+	\item второй;
+	\begin{code}
+		\inputminted
+		[
+		frame=single,
+		framerule=0.5pt,
+		framesep=10pt,
+		fontsize=\small,
+		tabsize=4,
+		linenos,
+		numbersep=5pt,
+		xleftmargin=10pt,
+		]
+		{text}
+		{code/1.lisp}
+	\end{code}
+
+	\item третий;
+	\begin{code}
+		\inputminted
+		[
+		frame=single,
+		framerule=0.5pt,
+		framesep=10pt,
+		fontsize=\small,
+		tabsize=4,
+		linenos,
+		numbersep=5pt,
+		xleftmargin=10pt,
+		]
+		{text}
+		{code/2.lisp}
+	\end{code}
+	
+	\item четвертый элементы заданного списка.
+		\begin{code}
+		\inputminted
+		[
+		frame=single,
+		framerule=0.5pt,
+		framesep=10pt,
+		fontsize=\small,
+		tabsize=4,
+		linenos,
+		numbersep=5pt,
+		xleftmargin=10pt,
+		]
+		{text}
+		{code/3.lisp}
+	\end{code}
+\end{enumerate}
+
+
+
+\subsection{Задание \textnumero3}
+
+Что будет в результате вычисления выражений?
+
+\begin{enumerate}[label*=\arabic*.]
+	\item  (CAADR $'$((blue cube) (red pyramid)))
+	
+	red
+	\item  (CDAR $'$((abc) (def) (ghi)))
+	
+	nil
+	
+	\item (CADR $'$((abc) (def) (ghi)))
+	
+	(def)
+	
+	\item  (CADDR $'$((abc) (def) (ghi)))
+	
+	(ghi)
+
+\end{enumerate}
+
+\subsection{Задание \textnumero4}
+
+Напишите результат вычисления выражений и объясните как он получен:
+\begin{code}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=10pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{code/4.lisp}
+\end{code}
+
+\subsection{Задание \textnumero5}
+
+Написать лямбда-выражение и соответствующую функцию:
+\begin{enumerate}[label*=\arabic*.]
+	\item Написать функцию (f arl ar2 ar3 ar4), возвращающую список: ((arl ar2) (ar3 ar4)).
+	\begin{code}
+		\inputminted
+		[
+		frame=single,
+		framerule=0.5pt,
+		framesep=10pt,
+		fontsize=\small,
+		tabsize=4,
+		linenos,
+		numbersep=5pt,
+		xleftmargin=10pt,
+		]
+		{text}
+		{code/func1.lisp}
+	\end{code}
+	
+	\item Написать функцию (f arl ar2), возвращающую ((arl) (ar2)).
+	\begin{code}
+		\inputminted
+		[
+		frame=single,
+		framerule=0.5pt,
+		framesep=10pt,
+		fontsize=\small,
+		tabsize=4,
+		linenos,
+		numbersep=5pt,
+		xleftmargin=10pt,
+		]
+		{text}
+		{code/func2.lisp}
+	\end{code}
+	
+	\item Написать функцию (f arl), возвращающую (((arl))). 
+	\begin{code}
+		\inputminted
+		[
+		frame=single,
+		framerule=0.5pt,
+		framesep=10pt,
+		fontsize=\small,
+		tabsize=4,
+		linenos,
+		numbersep=5pt,
+		xleftmargin=10pt,
+		]
+		{text}
+		{code/func3.lisp}
+	\end{code}
+\end{enumerate} 
+
+Результаты в виде списочных ячеек представлены на отдельном листе.
