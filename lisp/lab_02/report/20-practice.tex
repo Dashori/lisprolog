@@ -1,0 +1,205 @@
+\section{Практические задания}
+
+\subsection{Задание \textnumero1}
+
+Выполнено на отдельном листе.
+
+\subsection{Задание \textnumero2}
+
+Написать функцию, вычисляющую гипотенузу прямоугольного треугольника по заданным катетам и составить диаграмму ее вычисления.
+
+\begin{code}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=10pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{code/2.lisp}
+\end{code}
+
+Диаграмма вычислений выполнена на отдельном листе.
+
+
+\subsection{Задание \textnumero3}
+
+Каковы результаты вычисления следующих выражений? (объяснить возможную ошибку и варианты ее устранения)
+
+\begin{enumerate}[label*=\arabic*.]
+	\item (list 'a c)
+	
+	Ошибка, ибо C не самовычисляема, нужно добавить ', то есть 'c. Тогда ответ (A C ).
+	
+	\item  	(cons 'a (b c))
+	
+	Ошибка, ибо попытается вычислить (b c). Нужно добавить ' и получить '(b c). Тогда ответ (A B C).
+	
+	\item (cons 'a '(b c))
+	
+	(A B C)
+	
+	\item  (caddr (1 2 3 4 5))
+	
+	Ошибка, ибо (1 2 3 4 5) надо представить как список '(1 2 3 4 5). Тогда выведет 3 элемент, то есть 3. 
+	
+	\item (cons 'a 'b 'c)
+	
+	Ошибка, у cons только два аргумента. Если надо создать список из трех элементов a b c, то с помощью cons это можно сделать как в пункте 2.
+	
+	\item (list 'a (b c))
+	
+	Ошибка, список (b c) надо представить как '(b c), тогда ответ (A (B C)).
+	
+	\item (list a '(b c))
+	
+	Ошибка, a надо представить как '(a), тогда ответ (A (B C)).
+		
+	\item (list (+ 1 '(length '(1 2 3))))
+	
+	Ошибка,  ибо  '(length '(1 2 3)) не является числом. Необходимо убрать ' и ответ (4).
+
+\end{enumerate}
+
+\subsection{Задание \textnumero4}
+
+Написать функцию longer\_then от двух списков-аргументов, которая возвращает Т, если первый аргумент имеет большую длину.
+
+\begin{code}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=10pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{code/4.lisp}
+\end{code}
+
+\subsection{Задание \textnumero5}
+
+Каковы результаты вычисления следующих выражений:
+\begin{enumerate}[label*=\arabic*.]
+	\item (cons 3 (list 5 6))
+	
+	(3 5 6)
+
+	\item (list 3 'from 9 'lives (- 9 3))
+	
+	(3 FROM 9 LIVES 6)
+	
+	\item (+ (length for 2 too)) (car '(21 22 23)))
+	Ошибка
+	
+	\item (cdr '(cons is short for ans))
+	
+	(IS SHORT FOR ANS)
+	
+	\item (car (list one two))
+	
+	Ошибка
+	
+	\item (cons 3 '(list 5 6))
+	
+	(3 LIST 5 6)
+	
+	\item (car (list 'one 'two))
+
+	ONE	
+\end{enumerate} 
+
+\subsection{Задание \textnumero6}
+
+Дана функция (defun mystery (x) (list (second x) (first x))). Какие результаты вычисления следующих выражений?
+
+
+\begin{enumerate}[label*=\arabic*.]
+	\item (mystery (one two))
+	
+	Ошибка, необходимо добавить ' к списку.
+
+	\item (mystery (last one two))
+	
+	Ошибка, необходимо добавить ' к списку.
+	
+	\item (mystery free)
+	
+	Ошибка, необходимо добавить '  и скобки к free.
+	
+	\item (mystery one 'two))
+	
+	Ошибка, ибо ожидается один элемент. 
+	
+\end{enumerate} 
+
+
+\subsection{Задание \textnumero7}
+
+ Написать функцию, которая переводит температуру в системе Фаренгейта температуру по Цельсию (defun f-to-c (temp)...).
+ 
+Формулы: c = 5/9*(f-320); f= 9/5*c+32.0.
+
+Как бы назывался роман Р.Брэдбери "+451 по Фаренгейту" в системе по Цельсию?
+
+\begin{code}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=10pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{code/7.lisp}
+\end{code}
+
+\subsection{Задание \textnumero8}
+
+Что получится при вычисления каждого из выражений?
+
+\begin{enumerate}[label*=\arabic*.]
+	\item (list 'cons t NIL)
+	
+	(CONS T NIL)
+	
+	\item (eval (eval (list 'cons t NIL)))
+	
+ 	Ошибка.
+	
+	\item (apply \#cons "(t NIL))
+	
+	Это будет  результат cons '  '(t nil). Получается (' T NIL).
+	
+	\item (list 'eval NIL)
+	
+	(EVAL NIL)
+
+	\item (eval (list 'cons t NIL))
+	
+	(T)
+	
+	\item (eval NIL)
+	
+	(NIL)
+	
+	\item  (eval (list 'eval NIL))
+	
+	 (NIL)
+	
+\end{enumerate} 
+
+
