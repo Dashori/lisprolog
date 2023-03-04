@@ -1,0 +1,242 @@
+\section{Практические задания}
+
+\subsection{Задание \textnumero1}
+
+Написать функцию, которая принимает целое число и возвращает первое четное число, не меньшее аргумента.
+
+\begin{code}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=10pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{code/1.lisp}
+\end{code}
+
+
+\subsection{Задание \textnumero2}
+
+
+Написать функцию, которая принимает число и возвращает число того же знака, но с модулем на 1 больше модуля аргумента.
+
+\begin{code}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=10pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{code/2.lisp}
+\end{code}
+
+\subsection{Задание \textnumero3}
+
+ Написать функцию, которая принимает два числа и возвращает список из этих чисел, расположенный по возрастанию.
+ 
+ \begin{code}
+ 	\inputminted
+ 	[
+ 	frame=single,
+ 	framerule=0.5pt,
+ 	framesep=10pt,
+ 	fontsize=\small,
+ 	tabsize=4,
+ 	linenos,
+ 	numbersep=5pt,
+ 	xleftmargin=10pt,
+ 	]
+ 	{text}
+ 	{code/3.lisp}
+ \end{code}
+ 
+
+\subsection{Задание \textnumero4}
+
+Написать функцию, которая принимает три числа и возвращает Т только тогда, когда первое число расположено между вторым и третьим.
+
+\begin{code}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=10pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{code/4.lisp}
+\end{code}
+
+\subsection{Задание \textnumero5}
+
+Каковы результаты вычисления следующих выражений:
+
+\begin{enumerate}[label*=\arabic*.]
+	\item (and 'fee 'fie 'foe)
+	
+	FOE
+	
+	\item (or 'fee 'fie 'foe)
+	
+	FEE
+	
+	\item (and nil 'fie 'foe)	
+	
+	NIL
+		
+	\item (or nil 'fie 'foe)
+	
+	FIE
+	
+	\item (and (equal 'abc 'abc) 'yes)
+	
+	YES
+	
+	\item (or (equal 'abc 'abc) 'yes)
+	
+	T
+	
+\end{enumerate} 
+
+\subsection{Задание \textnumero6}
+
+Написать предикат, который принимает два числа-аргумента и возвращает Т, если первое число не меньше второго.
+
+\begin{code}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=10pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{code/6.lisp}
+\end{code}
+
+\subsection{Задание \textnumero7}
+
+Какой из следующих двух вариантов предиката ошибочен и почему?
+
+(defun pred1 (x)
+(and (numberp x) (plusp x))) 
+
+(defun pred2 (x)
+(and (plusp x)(numberp x)))
+
+Ошибочен второй, так как вначале проверяется <<знак>>,  а только после этого проверяется является ли x числом. Предикат plusp определен только для чисел, а значит не для чисел интерпретатор выдаст ошибку. 
+
+\subsection{Задание \textnumero8}
+
+Решить задачу 4, используя для ее решения конструкции: только IF, только COND, только AND/OR.
+Только IF  реализовано в задаче 4.
+
+Только COND:
+\begin{code}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=10pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{code/8-cond.lisp}
+\end{code}
+
+Только AND/OR:
+\begin{code}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=10pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{code/8-and.lisp}
+\end{code}
+
+
+\subsection{Задание \textnumero9}
+
+Переписать функцию how-alike, приведенную в лекции и использующую COND, используя только конструкции IF, AND/OR.
+
+\begin{code}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=10pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{code/how-alik-cond.lisp}
+\end{code}
+
+Только IF:
+\begin{code}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=10pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{code/how-alik-if.lisp}
+\end{code}
+
+Только AND/OR:
+\begin{code}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=10pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{code/how-alik-and.lisp}
+\end{code}
+
