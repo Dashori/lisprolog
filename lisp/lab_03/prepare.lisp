@@ -239,3 +239,88 @@
 (print (how-alike-and 5 9))
 (print (how-alike-and 3 3))
 (print (how-alike-and (+ 1 2) 3))
+
+(print (> 1 2 3))
+(print (< 1 2 3))
+
+;; prepare to prepare
+
+(print "PREPARE TO PREPARE")
+
+
+;; (setf x (list 'a 'b 'c))
+;; (print x)
+
+
+(defun x (a b) 
+    (* a b))
+;; (setf x '+)
+(defvar x '+)
+;; (funcall 'x 2 3 4) ;; это не работает, потому что функция 2 аргумента принимает
+(print (funcall x 2 3 4)) ;; 9
+(print (funcall x 2)) ;; 2
+
+(print (funcall 'x 2 3)) ;; 6
+
+(print (x 3 4)) ;; 12
+;; (print ('x 3 4)) ;; а так низя
+
+(write-line "")
+
+(let ((x 1))
+    (print (+ 5 x))
+)
+
+;; (setf x '*)  ;; варнинг
+(defvar x '*)
+
+(defun x(a b)
+        (+ a b))
+
+(print (funcall x 1 2)) ;; 2, то есть умножение
+(print (funcall 'x 1 2)) ;; 3 функция
+(print (apply x '(1 2))) ;; 2 умножение
+(print (apply 'x '(1 2))) ;; 3 функция
+(print (x 1 2))          ;; 3 функция
+
+
+(write-line "")
+(print "sqaure equation")
+;; квадратный корень!
+
+
+(defun equation (a b c)
+    (if (equal a 0)
+        (return-from equation (format nil "Solve is ~f"(/ (- c) b))))
+
+    (setf d (- (* b b) (* 4 a c)))
+    (print d)
+    (cond   ((= d 0) (return-from equation (format nil "Solve is ~f"(/ (- b) (* 2 a)))))
+
+            ((> d 0) (return-from equation (format nil "Solve is ~f"`(, (/ (+ (- b) (sqrt d)) (* 2 a)) ,(/ (- (- b) (sqrt d)) (* 2 a))))))
+
+            ((< d 0) (return-from equation (format nil "Solve is ~f~fi ~f+~fi" (realpart (/ (- (* -1 b) (sqrt d)) (* 2 a))) (imagpart (/ (- (* -1 b) (sqrt d)) (* 2 a))) (realpart(/ (+ (* -1 b) (sqrt d)) (* 2 a))) (imagpart(/ (+ (* -1 b) (sqrt d)) (* 2 a))))))
+
+    ) 
+)    
+
+
+;; (funcall 'equation 1 2 1)
+;; (funcall 'equation 3 2 1)
+;; (funcall 'equation -3 6 9)
+
+;; (with-open-file (stream "./result.txt" :direction :output)
+;;                 (format stream (equation 1 2 1)) 
+;; )
+
+;; (with-open-file (stream "./result.txt" :direction :output)
+;;                 (format stream (equation -3 6 9)) 
+;; )
+
+;; (with-open-file (stream "./result.txt" :direction :output)
+;;                 (format stream (equation 1 -3 8.5)) 
+;; )
+
+(with-open-file (stream "./result.txt" :direction :output)
+                (format stream (equation 0 2 4)) 
+)
