@@ -1,0 +1,214 @@
+\section{Практические задания}
+
+\subsection{Задание \textnumero1}
+
+Пусть (setf lst1 '( a b c))
+
+(setf lst2 '( d e))
+
+Каковы результаты вычисления следующих выражений?
+
+\begin{enumerate}[label*=\arabic*.]
+	\item (cons lstl lst2) 
+	
+	((A B C) D E)
+	
+	\item (list lst1 lst2) 
+	
+	((A B C) ( D E))
+	
+	\item (append lst1 lst2)
+	
+	(A B C D E)
+	
+\end{enumerate} 
+
+
+\subsection{Задание \textnumero2}
+
+Каковы результаты вычисления следующих выражений, и почему?
+
+\begin{enumerate} 
+
+\item (reverse '(a b c)) 
+
+(C B A) -- обычный разворот списка
+
+\item (reverse '(a b (c (d)))) 
+
+((C (D))  B A)  -- так как reverse работает относительно элементов списка верхнего уровня
+
+\item (reverse '(a)) 
+
+(A)
+\item (reverse ())
+
+NIL
+
+\item (reverse '((a b c)))
+
+((A B C)) -- так как reverse работает относительно элементов списка верхнего уровня, а (A B C) единственный элемент, то он останется на своем месте
+
+\item (last '(a b c))
+
+(С) -- так как является последним элементом
+
+\item (last '(a))
+
+(A) -- так как является единственным, то есть и первым и последним элементом
+
+\item (last '((a b c)))
+
+((A B C)) -- так как last работает относительно элементов списка верхнего уровня, а (A B C) единственный элемент, то есть и первый и последний
+
+\item (last '(a b (c))) 
+
+((С)) -- последний элемент списка верхнего уровня
+
+\item (last ())
+
+(NIL)
+
+\end{enumerate} 
+
+\subsection{Задание \textnumero3}
+
+Написать, по крайней мере, два варианта функции, которая возвращает последний элемент своего списка-аргумента.
+
+ \begin{code}
+ 	\inputminted
+ 	[
+ 	frame=single,
+ 	framerule=0.5pt,
+ 	framesep=10pt,
+ 	fontsize=\small,
+ 	tabsize=4,
+ 	linenos,
+ 	numbersep=5pt,
+ 	xleftmargin=10pt,
+ 	]
+ 	{text}
+ 	{code/3.lisp}
+ \end{code}
+ 
+
+\subsection{Задание \textnumero4}
+
+Написать, по крайней мере, два варианта функции, которая возвращает свой список аргумент без последнего элемента.
+
+\begin{code}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=10pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{code/4.lisp}
+\end{code}
+
+\subsection{Задание \textnumero5}
+
+Напишите функцию swap-first-last, которая переставляет в списке- аргументе первый и последний элементы.
+
+\begin{code}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=10pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{code/5.lisp}
+\end{code} 
+
+\subsection{Задание \textnumero6}
+
+ Написать простой вариант игры в кости, в котором бросаются две правильные кости. Если сумма выпавших очков равна 7 или 11 — выигрыш, если выпало (1,1) или (6,6) — игрок имеет право снова бросить кости, во всех остальных случаях ход переходит ко второму игроку, но запоминается сумма выпавших очков. Если второй игрок не выигрывает абсолютно, то выигрывает тот игрок, у которого больше очков. Результат игры и значения выпавших костей выводить на экран с помощью функции print.
+
+\begin{code}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=10pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{code/6.lisp}
+\end{code}
+
+\subsection{Задание \textnumero7}
+
+Написать функцию, которая по своему списку-аргументу lst определяет является ли он палиндромом (то есть равны ли lst и (reverse lst)).
+
+\begin{code}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=10pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{code/7.lisp}
+\end{code}
+
+
+\subsection{Задание \textnumero8}
+
+Напишите свои необходимые функции, которые обрабатывают таблицу из 4-х точечных пар: (страна . столица), и возвращают по стране -- столицу, а по столице -- страну.
+
+\begin{code}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=10pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{code/8.lisp}
+\end{code}
+
+\subsection{Задание \textnumero9}
+
+Напишите функцию, которая умножает на заданное число-аргумент первый числовой элемент списка из заданного 3-х элементного списка-аргумента, когда все элементы списка -- числа/элементы списка -- любые объекты.
+
+\begin{code}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=10pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{code/9.lisp}
+\end{code}
