@@ -1,0 +1,7 @@
+(defun select-between (num1 num2 lst)
+     (cond ((null lst) NIL)
+        (T (reduce #'(lambda (x y)
+            (if (< num1 y num2) 
+                (cons y x) 
+                x)) 
+            lst :initial-value NIL))))

@@ -1,0 +1,18 @@
+(defun set-size (set1 &optional (size 0))
+    (cond ((null set1) size)
+    (T (set-size (cdr set1) (+ size 1)) )))
+
+(defun set-include (set1 set2)
+    (reduce #'(lambda (x y) (and x y))
+        (mapcar #'(lambda (x) 
+                    (reduce #'(lambda (x y) (or x y)) 
+                    x)) 
+                (mapcar #'(lambda (elem) 
+                        (maplist #'(lambda (x) 
+                            (equalp (car x) elem))
+                            set2))
+                        set1))))
+
+(defun set-equal (set1 set2)
+     (and (= (set-size set1) (set-size set2))
+     (set-include set1 set2) (set-include set2 set1)))
