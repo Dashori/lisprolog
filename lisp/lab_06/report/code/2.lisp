@@ -1,0 +1,5 @@
+(defun not-null-list (lst)
+    (cond ((null lst) NIL)
+        ((and (listp (car lst)) 
+            (not (null (caar lst)))) (car lst))
+        (T (not-null-list (cdr lst)))))
