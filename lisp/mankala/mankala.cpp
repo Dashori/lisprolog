@@ -3,6 +3,8 @@
 
 using namespace std;
 
+vector<int> mainResult;
+
 int dop(int n, vector<int> &holes, int i);
 
 // Вот он (по номерам лунок, откуда нужно делать каждый следующий ход): 3-4-2-3-4-1-4-2-3-4-Х.
@@ -25,24 +27,15 @@ void printHols(int n, vector<int> holes)
     cout << "! " << holes[n - 1] << endl;
 }
 
-// int checkLast(int n, vector<int> holes, k)
-// {
-
-// }
-
-
 int shift(int n, vector<int> &holes, int k)
 {
-    // cout << n << " " << k << endl;
     k--;
     int result;
     if (holes[k] - (n - k) < 0)
         result = holes[k] + k;
     else
         result = (holes[k] - (n - k)) % n; 
-    
-    cout << "shift!\n";
-  
+
     int need = holes[k];
     holes[k] = 0;
 
@@ -53,16 +46,14 @@ int shift(int n, vector<int> &holes, int k)
     }
 
     while (need > 0)
-    {
         for (int i = 0; (i < n) && (need > 0); i++)
         {
             holes[i]++;
             need--;
         }
-    }
-    
+
     printHols(n, holes);
-    
+
     return result;
 }
 
@@ -80,67 +71,90 @@ int mainSolve(int n, vector<int> &holes)
             if (res)
             {
                 newHoles = holes;
+                cout << "res";
                 continue;
             }
-        }
-    }
-
-    return 1;
-}
-
-int home(int n, vector<int> &holes) 
-{
-    vector<int> newHoles = holes;
-
-    for (int i = 0; i < n - 1; i++)
-    {
-        if (newHoles[i] != 0) // choose first hole with stones
-        {
-            cout << "\n\nHOME " << i + 1 << endl;
-            int res = dop(n, newHoles, i);
-            
-            if (res)
+            else
             {
-                newHoles = holes;
-                continue;
+                mainResult.insert(mainResult.end(), i + 1);
+                return 0;
             }
         }
     }
 
     return 1;
 }
+
+// int home(int n, vector<int> &holes) 
+// {
+//     vector<int> newHoles = holes;
+
+//     for (int i = 0; i < n - 1; i++)
+//     {
+//         if (newHoles[i] != 0) // choose first hole with stones
+//         {
+//             // cout << "\n\nHOME " << i + 1 << endl;
+//             cout << i + 1 << endl;
+//             int res = dop(n, newHoles, i);
+            
+//             if (res)
+//             {
+//                 newHoles = holes;
+//                 continue;
+//             }
+//             else
+//             {
+//                 mainResult.insert(mainResult.end(), i + 1);
+//                 return 0;
+//             }
+//         }
+//     }
+
+//     return 1;
+// }
 
 int dop(int n, vector<int> &holes, int i)
 {
     int resPos = shift(n, holes, i + 1);
 
-    if (resPos == n - 1)
-    {
-        cout << "HOME\n";
-        home(n, holes);
-    }
-    else if (holes[resPos] == 1)
-    {
-        cout << "YOU LOSE\n";
-        return 1;
-    }
-    else
-    {
-        cout << "AGAIN\n";
-        dop(n, holes, resPos);
-    }
-
     if (isWin(n, holes))
     {
         cout << "Win\n";
+        // mainResult.insert(mainResult.end(), i + 1);
         return 0;
+    }
+
+    cout << "RES POS " << resPos << " " << n - 1 << endl;
+
+    if (resPos == n - 1)
+    {
+        cout << "HOME\n";  // попали в хоум, у нас 3 варианта развития событий
+        int res = mainSolve(n, holes);
+
+        if (!res)
+        {
+            // mainResult.insert(mainResult.end(), i + 1);
+            return 0;
+        }
+    }
+    else if (holes[resPos] == 1)
+    {
+        cout << "YOU LOSE\n\n";
+        return 1;
     }
     else
     {
-        cout << "Not win\n";
-        return 1;
+        cout << resPos + 1 << endl;
+        int resDop = dop(n, holes, resPos);
+
+        if (resDop == 0)
+        {
+            mainResult.insert(mainResult.end(), resPos + 1);
+            return 0;
+        }
     }
-    return 0;
+
+    return 1;
 }
 
 int main()
@@ -178,19 +192,11 @@ int main()
     mainSolve(n, holes);
     // shift(n, holes, 4);
 
-    printHols(n, holes);
+    // printHols(n, holes);
 
+    cout << "\n\n\nMain result\n";
 
-    // vector<int> newHoles = shift(n, holes);
-    // printHols(n, newHoles);
-
-    // if (isWin(n, holes))
-    // {
-    //     cout << "Win\n";
-    //     return 0;
-    // }
-
-    // cout << "Not win\n";
-
+    for (int i = 0; i < mainResult.size(); i++)
+        cout << mainResult[i] << " ";
     return 0;
 }
