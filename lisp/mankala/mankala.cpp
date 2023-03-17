@@ -3,6 +3,8 @@
 
 using namespace std;
 
+int dop(int n, vector<int> &holes, int i);
+
 // Вот он (по номерам лунок, откуда нужно делать каждый следующий ход): 3-4-2-3-4-1-4-2-3-4-Х.
 int isWin(int n, vector<int> holes)
 {
@@ -18,26 +20,37 @@ int isWin(int n, vector<int> holes)
 void printHols(int n, vector<int> holes)
 {
     for (int i = 0; i < n - 1; i++)
-    {
         cout << holes[i] << " ";
-    }
-    // cout << endl;
+
     cout << "! " << holes[n - 1] << endl;
 }
 
-void shift(int n, vector<int> &holes, int k)
-{
-    cout << n << " " << k << endl;
-    int need = holes[k - 1];
-    holes[k - 1] = 0;
+// int checkLast(int n, vector<int> holes, k)
+// {
 
-    for (int i = k; (i < n) && (need > 0); i++)
+// }
+
+
+int shift(int n, vector<int> &holes, int k)
+{
+    // cout << n << " " << k << endl;
+    k--;
+    int result;
+    if (holes[k] - (n - k) < 0)
+        result = holes[k] + k;
+    else
+        result = (holes[k] - (n - k)) % n; 
+    
+    cout << "shift!\n";
+  
+    int need = holes[k];
+    holes[k] = 0;
+
+    for (int i = k + 1; (i < n) && (need > 0); i++)
     {
         holes[i]++;
         need--;
     }
-
-    printHols(n, holes);
 
     while (need > 0)
     {
@@ -47,49 +60,88 @@ void shift(int n, vector<int> &holes, int k)
             need--;
         }
     }
+    
+    printHols(n, holes);
+    
+    return result;
 }
 
-int solve(int n, vector<int> holes)
+int mainSolve(int n, vector<int> &holes) 
 {
-//     cout << "\n\nРешение - номера лунок, откуда нужно делать ход:\n";
-//     cout << "Ход 1: 3\n\
-// Ход 2: 4\n\
-// Ход 3: 2\n\
-// Ход 4: 3\n\
-// Ход 5: 4\n\
-// Ход 6: 1\n\
-// Ход 7: 4\n\
-// Ход 8: 2\n\
-// Ход 9: 3\n\
-// Ход 10: 4\n";
+    vector<int> newHoles = holes;
 
-    if (isWin(n, holes))
-        return 0;
-    
     for (int i = 0; i < n - 1; i++)
     {
-        if (holes[i] != 0) // choose first hole with stones
+        if (newHoles[i] != 0) // choose first hole with stones
         {
-
+            cout << "\n\nMAIN SOLVE " << i + 1 << endl;
+            int res = dop(n, newHoles, i);
+            
+            if (res)
+            {
+                newHoles = holes;
+                continue;
+            }
         }
-
     }
 
     return 1;
 }
 
-// vector<int> shift (int n, vector<int> holes)
-// {
-//     int shift = 3;
-//     vector<int> newHoles(n);
-//     for (int i = 0; i < n; i++)
-//     {
-//         newHoles[i] = holes[(i + shift) % n];
-//     }
+int home(int n, vector<int> &holes) 
+{
+    vector<int> newHoles = holes;
 
-//     return newHoles;
-// }
+    for (int i = 0; i < n - 1; i++)
+    {
+        if (newHoles[i] != 0) // choose first hole with stones
+        {
+            cout << "\n\nHOME " << i + 1 << endl;
+            int res = dop(n, newHoles, i);
+            
+            if (res)
+            {
+                newHoles = holes;
+                continue;
+            }
+        }
+    }
 
+    return 1;
+}
+
+int dop(int n, vector<int> &holes, int i)
+{
+    int resPos = shift(n, holes, i + 1);
+
+    if (resPos == n - 1)
+    {
+        cout << "HOME\n";
+        home(n, holes);
+    }
+    else if (holes[resPos] == 1)
+    {
+        cout << "YOU LOSE\n";
+        return 1;
+    }
+    else
+    {
+        cout << "AGAIN\n";
+        dop(n, holes, resPos);
+    }
+
+    if (isWin(n, holes))
+    {
+        cout << "Win\n";
+        return 0;
+    }
+    else
+    {
+        cout << "Not win\n";
+        return 1;
+    }
+    return 0;
+}
 
 int main()
 {
@@ -123,8 +175,8 @@ int main()
 
     printHols(n, holes);
 
-    // solve(n, holes);
-    shift(n, holes, 4);
+    mainSolve(n, holes);
+    // shift(n, holes, 4);
 
     printHols(n, holes);
 
@@ -132,13 +184,13 @@ int main()
     // vector<int> newHoles = shift(n, holes);
     // printHols(n, newHoles);
 
+    // if (isWin(n, holes))
+    // {
+    //     cout << "Win\n";
+    //     return 0;
+    // }
+
+    // cout << "Not win\n";
+
     return 0;
 }
-
-
-//  В начале игры в каждую из четырёх маленьких лунок помещают по два камня. Для хода игрок берёт все семена из любой лунки и раскладывает их по одному в каждую лунку слева направо, по направлению к Дому, не пропуская ни одной.
-//    Если последний камень падает в Дом, и в руке остались семена, посев продолжается с первой лунки слева (в круговом варианте - дальше по кругу).
-//    Если последний камень падает в непустую лунку, игрок берёт все камни из этой лунки и продолжает посев в том же направлении, начиная со следующей лунки. 
-//    Если посев заканчивается в Доме, игрок может начать новый посев камнями из любой маленькой лунки.
-//    Если же последний камень при посеве падает в пустую лунку, игра заканчивается, пасьянс не сошёлся :(.
-//    Цель игры состоит в том, чтобы перенести ВСЕ семена в Дом. Это выигрыш :).
