@@ -38,13 +38,18 @@
     )
 )
 
+(defun againInputHole ()
+    (format t "Количество камней в лунке не может быть отрицательным.")
+    (finish-output)
+    T
+)
+
 (defun inputStone(hole)
-    (format t "Введите количество камней в ~A лунке: " (+ 1 hole) )
+    (format t "Введите количество камней в ~A лунке: " (+ 1 hole))
     (finish-output)
     (let ((stone (read)))
         (if (> 0 stone)
-            (and (format t "Количество камней в лунке не может быть отрицательным.")
-            (finish-output) (inputStone hole))
+            (and (againInputHole) (inputStone hole))
             stone
         )
     )
@@ -52,7 +57,6 @@
 
 
 (defun inputStones (tempCount needCount stones)
-    (format t "Temp count ~A  need count ~A: " tempCount needCount )
     (finish-output)
     (if (< tempCount needCount)
         (cons (inputStone tempCount) (inputStones (+ 1 tempCount) needCount stones))
@@ -67,12 +71,12 @@
             (let ((stones  (inputStones 0 holesCount ())))
                  (print stones)
             )
-            ;; (print holesCount)
         )
-        
     )
 
 )
 
 
 (play)
+
+;; (print ((format t "Количество камней в лунке не может быть отрицательным.")))
