@@ -83,6 +83,14 @@
 (print (isWin '(0 2 0 1)))
 (print (isWin '(0 0 0 0 0 1)))
 
+
+(defun resize (stones index)
+	(if (zerop index)
+		stones
+		(resize (cdr stones) (- index 1))
+	)
+)
+
 (defun findNotZeroHole (stones index) ;; ищем первый не 0 и чтоб это был не дом
     (cond 
         ((and (not (eql (car stones) 0)) (cdr stones))
@@ -101,6 +109,24 @@
 (print (findNotZeroHole '(0 0 0 4 5) 0))  
 (print (findNotZeroHole '(0 0 0 0 5) 0))  
 (write-line "")
+
+(write-line "not zero hole 2")
+(print ( + 0 (findNotZeroHole (resize '(1 2 3 4 5) 0) 0)))
+(print ( + 1 (findNotZeroHole (resize '(1 2 3 4 5) 1) 0)))  
+(print ( + 2 (findNotZeroHole (resize '(1 2 3 4 5) 2) 0)))
+(print ( + 3 (findNotZeroHole (resize '(1 2 3 4 5) 3) 0)))  
+(print ( findNotZeroHole (resize '(1 2 3 4 5) 4) 0))
+(write-line "")
+
+
+(write-line "resize")
+(print (resize '(1 2 3 4 5) 0))  
+(print (resize '(1 2 3 4 5) 1))  
+(print (resize '(1 2 3 4 5) 2))  
+(print (resize '(1 2 3 4 5) 3))  
+(print (resize '(1 2 3 4 5) 4))  
+(write-line "")
+
 
 (defun shift (size lst idx)  ;; функция для сдвига 
   (let ((val (nth idx lst))
@@ -126,32 +152,89 @@
     )
 )
 
-(write-line "WHICH HOLE")
-(print (whichHole 6 '(1 2 3 4 20 0) 5))
-(print (whichHole 6 '(1 2 3 4 21 0) 5))
-(print (whichHole 6 '(1 2 3 4 22 0) 5))
-(print (whichHole 6 '(1 2 3 4 23 0) 5))
-(print (whichHole 6 '(1 2 3 4 24 0) 5))
-(print (whichHole 6 '(1 2 3 4 25 0) 5))
-(print (whichHole 6 '(1 2 3 4 26 0) 5))
 
+
+(write-line "WHICH HOLE")
+(print (whichHole 6 '(1 2 3 4 20 0) 4))
+(print (whichHole 6 '(1 2 3 4 21 0) 4))
+(print (whichHole 6 '(1 2 3 4 22 0) 4))
+(print (whichHole 6 '(1 2 3 4 23 0) 4))
+(print (whichHole 6 '(1 2 3 4 24 0) 4))
+(print (whichHole 6 '(1 2 3 4 25 0) 4))
+(print (whichHole 6 '(1 2 3 4 26 0) 4))
+
+
+(write-line "")
+(print (whichHole 5 '(2 2 2 2 0) 1))
+(print (whichHole 5 '(0 3 3 2 0) 3))
 (write-line "")
 
 
-;; (defun dop (len stones i)
-;;     (let ((resPos )))
-
-;; )
-
-(defun mainSolve (len stones)
-    (let ((hole (findNotZeroHole stones 0)))
+(defun mainSolve (len stones index resizeParam)
+    (print "MAIN SOLVE")
+    (print resizeParam)
+    (let ((hole (findNotZeroHole (resize stones resizeParam) index)))
+    ;; (let ((hole (findNotZeroHole stones index)))
+        ;; (print hole)
         (if hole
-            ;; (let (res (dop len stones hole))
-                (print hole)
-            ;; )
-            
-            (print "loh")
+            (let ((res (dop len stones (+ resizeParam hole))))
+        ;;         (print "in main solve")
+        ;;         (print hole)
+                (print "RES")
+                (print res)
+
+                (if (not res)
+                    (mainSolve len stones index (+ 1 resizeParam))
+                    T
+                )
+            )
+            NIL
+            ;; (print "loh")
         )
+        ;; (print "a")
+    )
+)
+
+(defun dop (len stones i)
+    (print "DOP")
+    (print len)
+    (let ((resPos (whichHole len stones (+ i 1)))
+        (new_stones (shift (length stones) stones i)))
+
+        (print stones)
+        (print new_stones)
+        (print resPos)
+        
+        (if (isWin new_stones)
+            (print "WIN")
+            ;; NIL
+        ;; )
+        (cond 
+                ((eql resPos (- len 1))   ;; дом 
+                    (print "HOME ")
+                    (if (mainSolve len new_stones 0 0)
+                        T
+                        NIL
+                    )
+                )
+                ((eql (nth resPos new_stones) 1)
+                    NIL) 
+                (T 
+                    (let ((resDop (dop len new_stones resPos)))
+                        (if resDop
+                            T 
+                            NIL)))
+
+                ;; (print "T"))
+        )
+        )
+        ;; NIL
+        ;; (print resPos)
+        ;; (print stones)
+        ;; (print new_stones)
+        ;; T
+        ;; (print (shift (length stones) stones (+ 1 i)))
+        ;; resPos
     )
 )
 
@@ -165,25 +248,44 @@
             (let ((stones  (inputStones 0 holesCount ())))
                 ;; (cons stones '(0))
                 (tempPrint stones)
-                (mainSolve (length stones) stones)
+                (let ((result (mainSolve (length stones) stones 0 0)))
+                    (write-line "")
+                    (print "!!!RESULT!!!")
+                    (print result)
+                )
             )
         )
     )
 
-    (print resultList)
+    ;; (print resultList)
 )
 
-;; (play)
 
-(print (shift 5 '(1 3 3 4 0) 1))
-(print (shift 5 '(1 2 3 4 0) 1))
-(print (shift 4 '(1 2 3 4) 1))
-(print (shift 6 '(1 2 3 4 20 0) 4)) ;; 5 5 6 7 3 4 
-(print (shift 6 '(1 2 3 4 21 0) 4)) ;; 5 6 6 7 3 4 
-(print (shift 6 '(1 2 3 4 1 0) 4)) ;; 1 2 3 4 0 1
-(print (shift 6 '(1 2 3 4 1 0) 0)) ;; 0 3 3 4 1 0
+
+;; (print (shift 5 '(1 3 3 4 0) 1))
+;; (print (shift 5 '(1 2 3 4 0) 1))
+;; (print (shift 4 '(1 2 3 4) 1))
+;; (print (shift 6 '(1 2 3 4 20 0) 4)) ;; 5 5 6 7 3 4 
+;; (print (shift 6 '(1 2 3 4 21 0) 4)) ;; 5 6 6 7 3 4 
+;; (print (shift 6 '(1 2 3 4 1 0) 4)) ;; 1 2 3 4 0 1
+;; (print (shift 6 '(1 2 3 4 1 0) 0)) ;; 0 3 3 4 1 0
 
 ;; (print (length '(1 2 3 4 )))
 
 ;; (print (cons '(1 2 3 4 5) '(0 nil) ))
 ;; (print (cons '0 '(1 2 3 4 5) ))
+
+(play)
+
+
+;; (defun try (lst) 
+;;     (let ((a 5))
+;;         (if lst
+;;             T
+;;             NIL)
+;;         ;; (print "b")
+;;     )
+;;     (print "a")
+;; )
+
+;; (print (try '(1 2 3)))
