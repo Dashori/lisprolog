@@ -38,7 +38,7 @@
 (defun againInputHole ()
     (format t "Количество камней в лунке не может быть отрицательным.")
     (finish-output)
-    (setf resultList (cons 1 resultList))
+    ;; (setf resultList (cons 1 resultList))
     T
 )
 
@@ -185,7 +185,10 @@
 
                 (if (not res)
                     (mainSolve len stones index (+ 1 resizeParam))
-                    T
+                    ;; (progn 
+                    (setf resultList (cons (+ 1 resizeParam hole) resultList))
+                    ;; T)
+                    ;; T
                 )
             )
             NIL
@@ -222,7 +225,8 @@
                 (T 
                     (let ((resDop (dop len new_stones resPos)))
                         (if resDop
-                            T 
+                            ;; T
+                            (setf resultList (cons (+ 1 resPos) resultList))
                             NIL)))
 
                 ;; (print "T"))
@@ -257,7 +261,7 @@
         )
     )
 
-    ;; (print resultList)
+    (print resultList)
 )
 
 
