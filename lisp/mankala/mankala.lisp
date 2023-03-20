@@ -132,18 +132,146 @@
     )
 )
 
-(defun shift (len stones index)  ;; функция для сдвига 
-  (let ((val (nth index stones))
-        (newlist (copyList stones))
-        (i (+ index 1)))
-    (setf (nth index newlist) 0)
-    (dotimes (j val)
-      (setf (nth i newlist)
-            (+ 1 (nth i newlist)))
-      (setf i (mod (+ i 1) len)))
-    newlist
+;; (defun shift (len stones index)  ;; функция для сдвига 
+;;   (let ((val (nth index stones))
+;;         (newlist (copyList stones))
+;;         (i (+ index 1)))
+;;     (setf (nth index newlist) 0)
+;;     (dotimes (j val)
+;;       (setf (nth i newlist)
+;;             (+ 1 (nth i newlist)))
+;;       (setf i (mod (+ i 1) len)))
+;;     newlist
+;;     )
+;; )
+
+(defun shift (len stones index)  ;; функция для сдвига2
+    (let    ((val (nth index stones))
+            (stones (dopShiftEnd len stones index)) ;; прибавляем конец
+            (index (+ index 1))
+            ;; (stones (zeroElement stones index))
+            )
+
+        ;; (print stones)
+        (if (> (- val (- len index)) 0)
+            (progn 
+                ;; добавляем остатки в начало
+                (if (eql (mod (- val (- len index)) len) 0)
+                    stones
+                    (progn 
+                        (setf stones (plusInterval stones 1 0 (- (mod (- val (- len index)) len) 1) 0))
+                    )
+                )
+
+                ;; прибавляем основную часть
+                (if (< (floor (- val (- len index)) len) 0)
+                    stones
+                    (plusInterval stones (floor (- val (- len index)) len) 0 len 0) ;; плюсуем все лунки
+                )
+            )
+            stones
+        )
     )
 )
+
+
+;; (defun shift (len stones index)  ;; функция для сдвига2
+;;     (let    
+;;             ((val (nth index stones))
+;;             (stones (dopShiftEnd len stones index)) ;; прибавляем конец
+;;             (index (+ index 1)))
+
+;;         (if (> (- val (- len index)) 0)
+;;             (progn 
+;;                 (let  ((stones (dopShiftStart len stones index))) ;; прибавляем начало
+;;                 ;; прибавляем основную часть
+;;                     (if (< (floor (- val (- len index)) len) 0)
+;;                         stones
+;;                         (plusInterval stones (floor (- val (- len index)) len) 0 len 0) ;; плюсуем все лунки
+;;                     )
+;;                 )
+;;             )
+;;             stones
+;;         )
+;;     )
+;; )
+
+(defun plusInterval (stones num start end index)
+  (if (not stones)
+        NIL
+        (if (<= index end)
+            (if (>= index start)
+                (cons (+ (car stones) num) (plusInterval (cdr stones) num start end (+ index 1)))
+                (cons (car stones) (plusInterval (cdr stones) num start end (+ index 1)))
+            )
+            (cons (car stones) (plusInterval (cdr stones) num start end index))
+        )
+    )
+)
+
+
+(defun zeroElement (stones index)
+    (if (null stones)
+        NIL
+        (if (eql index 0)
+            (cons 0 
+                (cdr stones))
+            (cons (car stones) 
+                (zeroElement (cdr stones) (- index 1)))
+        )
+    )
+)
+
+
+;; заполняем конец 
+(defun dopShiftEnd (len stones index)
+    (let  ((val (nth index stones))
+            (index (+ index 1))
+            (stones (zeroElement stones index)))
+
+        (if (< index len) ;; проверяем что не последняя ячейка
+            (if (> val (- len index)) ;; то есть у нас есть ресурсы чтоб заполнить 
+                (plusInterval stones 1 index len 0)   ;; прибавляем начиная с pos до end
+                (plusInterval stones 1 index (- (+ val index) 1) 0) ;; прибавляем сколько можем
+            )
+            stones
+        )
+    )
+)
+
+;; добавляем остатки в начало
+(defun dopShiftStart (len stones index)
+    (let  ((val (nth index stones))
+           (index (+ 1 index)))
+        (if (eql (mod (- val (- len index)) len) 0)
+            stones
+            (plusInterval stones 1 0 (- (mod (- val (- len index)) len) 1) 0)
+        )
+    )
+)
+
+;; (defun shift (len stones index)  ;; функция для сдвига2
+;;     ;; (let    
+;;     ;;         ((val (nth index stones))
+;;     ;;         (stones (dopShiftEnd len stones index)) ;; прибавляем конец
+;;     ;;         ;; (index (+ index 1))
+;;     ;;         )
+
+;;     ;;     (if (> (- val (- len index)) 0)
+;;     ;;         ;; ( 
+;;     ;;             ;; (let  ((stones (dopShiftStart len stones index))) ;; прибавляем начало
+;;     ;;             ;; прибавляем основную часть
+;;     ;;                 ;; (if (< (floor (- val (- len index)) len) 0)
+;;     ;;                     stones
+;;     ;;                     ;; (plusInterval stones (floor (- val (- len index)) len) 0 len 0) ;; плюсуем все лунки
+;;     ;;                 ;; )
+;;     ;;             ;; )
+;;     ;;         ;; )
+;;     ;;         stones
+;;     ;;     )
+;;     ;; )
+;;     stones
+;; )
 
 ;; (print (shift 5 '(1 3 3 4 0) 1)) ;; 1 0 4 5 1
 ;; (print (shift 5 '(1 2 3 4 0) 1)) ;; 1 0 4 5 0 
