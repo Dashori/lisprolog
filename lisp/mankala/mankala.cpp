@@ -26,6 +26,7 @@ void printHols(int n, vector<int> holes)
 
 int shift(int n, vector<int> &holes, int k)
 {
+    cout << k << " " << n;
     k--;
     int result;
     if (holes[k] - (n - k) < 0)
@@ -48,6 +49,8 @@ int shift(int n, vector<int> &holes, int k)
             holes[i]++;
             need--;
         }
+
+    cout << result << endl;
 
     return result;
 }
@@ -104,7 +107,7 @@ int dop(int n, vector<int> &holes, int i)
 
         if (resDop == 0)
         {
-            mainResult.insert(mainResult.end(), resPos + 1);
+            // mainResult.insert(mainResult.end(), resPos + 1);
             // cout << "Ход " << resPos + 1 << ": ";
             // printHols(n, holes);
             return 0;

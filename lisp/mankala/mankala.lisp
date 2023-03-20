@@ -13,19 +13,12 @@
 - если камень падает в Дом, и в руке остались камни, посев продолжается с первой лунки слева.
 - если посев заканчивается в Доме, игрок может начать новый посев камнями из любой маленькой лунки;~%"))
 
-(introduce)
-
-;; (defparameter *glob* resultLst)
 (defvar resultList ())
 
 (defun inputCountHoles ()
     (format t "~%Введите количество лунок: ")
     (finish-output)
     (let ((holes (read)))
-        ;; (when (not (numberp holes))
-        ;;     (format t "Количество лунок должно быть натуральным числом.")
-        ;;     (finish-output)
-        ;; )
         (if (> 0 holes)
             (and (format t "Количество лунок не может быть отрицательным.")
             (finish-output) 0)
@@ -51,13 +44,11 @@
     )
 )
 
-
 (defun inputStones (tempCount needCount stones)
     (finish-output)
     (if (< tempCount needCount)
         (cons (inputStone tempCount) (inputStones (+ 1 tempCount) needCount stones))
         (nconc stones '(0))
-        ;; (cons stones (cons 0 nil))
     )
 )
 
@@ -74,13 +65,6 @@
           (T T)
     )
 )
-
-;; (print (isWin '(1 2 3 4)))
-;; (print (isWin '(0 0 0 0)))
-;; (print (isWin '(0 0 0 1)))
-;; (print (isWin '(0 2 0 1)))
-;; (print (isWin '(0 0 0 0 0 1)))
-
 
 (defun resize (stones index)
 	(if (zerop index)
@@ -100,114 +84,25 @@
     )
 )
 
-;; (write-line "not zero hole")
-;; (print (findNotZeroHole '(1 2 3 4 5) 0))
-;; (print (findNotZeroHole '(0 1 3 4 5) 0))  
-;; (print (findNotZeroHole '(0 0 3 4 5) 0))  
-;; (print (findNotZeroHole '(0 0 0 4 5) 0))  
-;; (print (findNotZeroHole '(0 0 0 0 5) 0))  
-;; (write-line "")
-
-;; (write-line "not zero hole 2")
-;; (print ( + 0 (findNotZeroHole (resize '(1 2 3 4 5) 0) 0)))
-;; (print ( + 1 (findNotZeroHole (resize '(1 2 3 4 5) 1) 0)))  
-;; (print ( + 2 (findNotZeroHole (resize '(1 2 3 4 5) 2) 0)))
-;; (print ( + 3 (findNotZeroHole (resize '(1 2 3 4 5) 3) 0)))  
-;; (print ( findNotZeroHole (resize '(1 2 3 4 5) 4) 0))
-;; (write-line "")
-
-
-;; (write-line "resize")
-;; (print (resize '(1 2 3 4 5) 0))  
-;; (print (resize '(1 2 3 4 5) 1))  
-;; (print (resize '(1 2 3 4 5) 2))  
-;; (print (resize '(1 2 3 4 5) 3))  
-;; (print (resize '(1 2 3 4 5) 4))  
-;; (write-line "")
-
-(defun copyList (stones)
-    (if (atom stones)
-        stones
-        (cons (car stones) (copyList (cdr stones)))
-    )
-)
-
-;; (defun shift (len stones index)  ;; функция для сдвига 
-;;   (let ((val (nth index stones))
-;;         (newlist (copyList stones))
-;;         (i (+ index 1)))
-;;     (setf (nth index newlist) 0)
-;;     (dotimes (j val)
-;;       (setf (nth i newlist)
-;;             (+ 1 (nth i newlist)))
-;;       (setf i (mod (+ i 1) len)))
-;;     newlist
-;;     )
-;; )
-
-;; (defun shift (len stones index)  ;; функция для сдвига2
-;;     (let    ((val (nth index stones))
-;;             (stones (dopShiftEnd len stones index)) ;; прибавляем конец
-;;             (index (+ index 1))
-            ;; (stones (zeroElement stones index))
-            ;; )
-
-        ;; (print stones)
-        ;; (if (> (- val (- len index)) 0)
-            ;; (progn 
-            ;;     ;; добавляем остатки в начало
-            ;;     (if (eql (mod (- val (- len index)) len) 0)
-            ;;         stones
-            ;;         (progn 
-            ;;             (setf stones (plusInterval stones 1 0 (- (mod (- val (- len index)) len) 1) 0))
-            ;;         )
-            ;;     )
-
-            ;;     ;; прибавляем основную часть
-            ;;     (if (< (floor (- val (- len index)) len) 0)
-            ;;         stones
-            ;;         (plusInterval stones (floor (- val (- len index)) len) 0 len 0) ;; плюсуем все лунки
-            ;;     )
-            ;; )
-            ;; stones
-
-            ;;         (if (> (- val (- len index)) 0)
-            ;; (progn 
-                ;; (let  ((stones (dopShiftStart len stones index))) ;; прибавляем начало
-;;                 ;; прибавляем основную часть
-                    ;; (if (< (floor (- val (- len index)) len) 0)
-                        ;; stones
-                        ;; stones
-                        ;; (plusInterval stones (floor (- val (- len index)) len) 0 len 0) ;; плюсуем все лунки
-                    ;; )
-                ;; )
-            ;; )
-            ;; stones
-;;         )
-        ;; )
-    ;; )
-;; )
-
-
-
-
-(defun plusInterval (stones num start end index)
+(defun plusInterval (stones num start end index) ;; + num ко всем элементам списка в интервале start end
   (if (not stones)
         NIL
         (if (<= index end)
             (if (>= index start)
-                (cons (+ (car stones) num) (plusInterval (cdr stones) num start end (+ index 1)))
-                (cons (car stones) (plusInterval (cdr stones) num start end (+ index 1)))
+                (cons (+ (car stones) num) 
+                        (plusInterval (cdr stones) num start end (+ index 1)))
+                (cons (car stones) 
+                        (plusInterval (cdr stones) num start end (+ index 1)))
             )
-            (cons (car stones) (plusInterval (cdr stones) num start end index))
+            (cons (car stones) 
+                    (plusInterval (cdr stones) num start end index))
         )
     )
 )
 
-
-(defun zeroElement (stones index)
-    (if (null stones)
-        nil
+(defun zeroElement (stones index) ;; зануляем элемент по индексу
+    (if (not stones)
+        NIL
         (if (eql index 0)
             (cons 0 
                     (cdr stones))
@@ -223,7 +118,7 @@
             (index (+ index 1))
             (stones (zeroElement stones index)))
 
-        (if (< index len) ;; проверяем что не последняя ячейка
+        (if (<= index len) ;; проверяем что не последняя ячейка
             (if (> val (- len index)) ;; то есть у нас есть ресурсы чтоб заполнить 
                 (plusInterval stones 1 index len 0)   ;; прибавляем начиная с pos до end
                 (plusInterval stones 1 index (- (+ val index) 1) 0) ;; прибавляем сколько можем
@@ -234,12 +129,10 @@
 
 ;; добавляем остатки в начало
 (defun dopShiftStart (len stones index val)
-    ;; (let   ((index (+ 1 index)))
-        (if (eql (mod (- val (- len index)) len) 0)
-            stones
-            (plusInterval stones 1 0  (- (mod (- val (- len index)) len) 1) 0)
-        )
-    ;; )
+    (if (eql (mod (- val (- len index)) len) 0)
+        stones
+        (plusInterval stones 1 0  (- (mod (- val (- len index)) len) 1) 0)
+    )
 )
 
 (defun shift (len stones index)  ;; функция для сдвига2
@@ -249,7 +142,6 @@
             (index (+ index 1)))
 
         (if (> (- val (- len index)) 0)
-            ;; (progn 
                 (let  ((stones (dopShiftStart len stones index val))) ;; прибавляем начало
                 ;; прибавляем основную часть
                     (if (< (floor (- val (- len index)) len) 0)
@@ -257,45 +149,10 @@
                         (plusInterval stones (floor (- val (- len index)) len) 0 len 0) ;; плюсуем все лунки
                     )
                 )
-            ;; )
             stones
         )
     )
 )
-
-;; (defun shift (len stones index)  ;; функция для сдвига2
-;;     ;; (let    
-;;     ;;         ((val (nth index stones))
-;;     ;;         (stones (dopShiftEnd len stones index)) ;; прибавляем конец
-;;     ;;         ;; (index (+ index 1))
-;;     ;;         )
-
-;;     ;;     (if (> (- val (- len index)) 0)
-;;     ;;         ;; ( 
-;;     ;;             ;; (let  ((stones (dopShiftStart len stones index))) ;; прибавляем начало
-;;     ;;             ;; прибавляем основную часть
-;;     ;;                 ;; (if (< (floor (- val (- len index)) len) 0)
-;;     ;;                     stones
-;;     ;;                     ;; (plusInterval stones (floor (- val (- len index)) len) 0 len 0) ;; плюсуем все лунки
-;;     ;;                 ;; )
-;;     ;;             ;; )
-;;     ;;         ;; )
-;;     ;;         stones
-;;     ;;     )
-;;     ;; )
-;;     stones
-;; )
-
-;; (print (shift 5 '(1 3 3 4 0) 1)) ;; 1 0 4 5 1
-;; (print (shift 5 '(1 2 3 4 0) 1)) ;; 1 0 4 5 0 
-
-(print (shift 4 '(1 2 3 4) 1))
-(print (shift 6 '(1 2 3 4 20 0) 4)) ;; 5 5 6 7 3 4 
-(print (shift 6 '(1 2 3 4 21 0) 4)) ;; 5 6 6 7 3 4 
-(print (shift 6 '(1 2 3 4 1 0) 4)) ;; 1 2 3 4 0 1
-(print (shift 6 '(1 2 3 4 1 0) 0)) ;; 0 3 3 4 1 0
-(print (shift 6 '(0 2 3 4 1 0) 0)) ;; 0 2 3 4 1 0
-
 
 (defun whichHole (len stones i) ;; функция для расчета куда попадет сдвиг
     (let ((i  (- i 1)))
@@ -305,21 +162,6 @@
         )
     )
 )
-
-;; (write-line "WHICH HOLE")
-;; (print (whichHole 6 '(1 2 3 4 20 0) 4))
-;; (print (whichHole 6 '(1 2 3 4 21 0) 4))
-;; (print (whichHole 6 '(1 2 3 4 22 0) 4))
-;; (print (whichHole 6 '(1 2 3 4 23 0) 4))
-;; (print (whichHole 6 '(1 2 3 4 24 0) 4))
-;; (print (whichHole 6 '(1 2 3 4 25 0) 4))
-;; (print (whichHole 6 '(1 2 3 4 26 0) 4))
-
-
-;; (write-line "")
-;; (print (whichHole 5 '(2 2 2 2 0) 1))
-;; (print (whichHole 5 '(0 3 3 2 0) 3))
-;; (write-line "")
 
 
 (defun mainSolve (len stones index resizeParam) 
@@ -370,6 +212,7 @@
 )
 
 (defun play ()
+    (introduce)
     (let ((holesCount (inputCountHoles)))
         (if holesCount
             (let ((stones  (inputStones 0 holesCount ())))
@@ -387,5 +230,5 @@
     )
 )
 
-(play)
+;; (play)
 
