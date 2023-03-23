@@ -97,40 +97,36 @@
 
 
 
-;; (defun my-last (x)
-;;     (cond ((null x) x)
-;;           ((null (cdr x)) x)
-;;           (T (my-last (cdr x)))))
-
 (defun myLast (x)
-    (if (null x)
-        (x)
-        (if (null (cdr x))
+    (if (not x)
+        x
+        (if (not (cdr x))
             x
-            (myLast (cdr x))
-        )
-    )
-)
+            (myLast (cdr x)))))
 
-(defun change-last (x el)
-    (cond ((null x) x)
-    ((null (cdr x)) (cons el Nil))
-    (T (cons (car x) (change-last (cdr x) el)))))
 
 (defun changeLast (x el)
-    (if (null x)
-        (x)
-        (if (null (cdr x))
+    (if (not x)
+        x
+        (if (not (cdr x))
             (cons el Nil)
             (cons (car x) (changeLast (cdr x) el)))))
 
 (defun swap-first-last (x)
     (changeLast (cons (car (myLast x)) (cdr x)) (car x)))
 
+(write-line "")
+(write-line "")
+(write-line "")
 (print (swap-first-last '(1 2 3 4)))
+(print (swap-first-last '(1 2 3 4 5)))
+(print (swap-first-last '(1 5)))
 
 (print (changeLast '(1 2 3 4) '5))
 
+(write-line "")
+(write-line "")
+(write-line "")
 
 
 (print (myLast '(1 2 3 4)))

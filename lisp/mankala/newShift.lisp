@@ -32,7 +32,7 @@
 ;; (print (plusToN '(0 0 0 0 0) 1 0))
 ;; (write-line "")
 
-;; Пример использования:
+
 
 ;; (print (plusInterval '(1 1 1 1 1) 3 2 4 0))
 ;; (print (plusInterval '(1 1 1 1 1) 3 2 5 0))
@@ -114,12 +114,11 @@
 )
 
 ;; добавляем остатки в начало
-(defun dopShiftStart (len stones index)
-    (let  ((val (nth index stones))
-           (index (+ 1 index)))
+(defun dopShiftStart (len stones index val)
+    (let   ((index (+ 1 index)))
         (if (eql (mod (- val (- len index)) len) 0)
             stones
-            (plusInterval stones 1 0 (- (mod (- val (- len index)) len) 1) 0)
+            (plusInterval stones 1 0  (mod (- val (- len index)) len) 0)
         )
     )
 )
@@ -132,7 +131,7 @@
 
         (if (> (- val (- len index)) 0)
             (progn 
-                (let  ((stones (dopShiftStart len stones index))) ;; прибавляем начало
+                (let  ((stones (dopShiftStart len stones index val))) ;; прибавляем начало
                 ;; прибавляем основную часть
                     (if (< (floor (- val (- len index)) len) 0)
                         stones
@@ -154,9 +153,36 @@
 ;; (print (shift 6 '(1 2 3 4 1 0) 4)) ;; 1 2 3 4 0 1
 ;; (print (shift 6 '(1 2 3 4 1 0) 0)) ;; 0 3 3 4 1 0
 
+
+(defun copyList (stones)
+    (if (atom stones)
+        stones
+        (cons (car stones) (copyList (cdr stones)))
+    )
+)
+
+(defun shiftOld (len stones index)  ;; функция для сдвига 
+  (let ((val (nth index stones))
+        (newlist (copyList stones))
+        (i (+ index 1)))
+    (setf (nth index newlist) 0)
+    (dotimes (j val)
+      (setf (nth i newlist)
+            (+ 1 (nth i newlist)))
+      (setf i (mod (+ i 1) len)))
+    newlist
+    )
+)
+
+
 (write-line "new shift")
 (print (shift2 4 '(1 2 3 4) 1))      ;; 1 0 4 5
+;; (print (shiftOld 4 '(1 2 3 4) 1))      ;; 1 0 4 5
+
+
 (print (shift2 6 '(1 2 3 4 20 0) 4)) ;; 5 5 6 7 3 4 
+;; (print (shiftOld 6 '(1 2 3 4 20 0) 4)) ;; 5 5 6 7 3 4 
+
 (print (shift2 6 '(1 2 3 4 21 0) 4)) ;; 5 6 6 7 3 4 
 (print (shift2 6 '(1 2 3 4 22 0) 4)) ;; 5 6 7 7 3 4 
 (print (shift2 6 '(1 2 3 4 23 0) 4)) ;; 5 6 7 8 3 4 

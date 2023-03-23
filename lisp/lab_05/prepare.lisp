@@ -4,7 +4,7 @@
 
 (defun all-num-minus-10 (lst) 
      (mapcar #'(lambda (x)
-         (cond ((null x) Nil)
+         (cond ((not x) Nil)
                ((numberp x) (- x 10))
                ((listp x) (all-num-minus-10 x))
                (t x))) lst))
@@ -74,6 +74,7 @@
 (print (palyndrom-lst '(a b c (d e) c b a)))
 (print (palyndrom-lst '(a)))
 (print (palyndrom-lst '(1 2 3)))
+
 
 
 
@@ -192,3 +193,68 @@
           (T (reduce #'+ (mapcar #'set-size lst)))))
 
 (print (len-list-of-list '((a b) (c d) (e f d))))
+
+
+(print (atom 'a))
+(print (atom 'as))
+(print (atom "adsfsdg"))
+
+(print (atom (* 1 2)))
+
+
+(if T
+    (print 'a)
+    (print 'b))
+
+(if (eq 5 (+ 2 2))
+    (print 'a)
+    (print 'b))
+
+
+(print (mapcar #'(lambda (x y) (+ x y)) 
+        '(1 2 3) '(6 5 4)))
+
+(print (maplist #'(lambda (x y) (list x y))
+        '(1 2 3) '(6 5 4)))
+
+       
+(print (mapcan #'(lambda (x) (and (oddp x) (list (* x x))))
+            '(1 2 3 4 5 6 7 8 9)))
+
+;; (((reduce #'oddp '(1 2 3 4 5 6))))
+
+(print
+(reduce #'list '(1 2 3 4 5)))
+
+(print (list (list (list (list 1 2) 3) 4) 5) )
+
+
+
+(write-line "")
+(write-line "")
+
+(defun insert-elem2 (lst elem &optional (before-lst Nil))
+     (cond 
+           ((and (null lst) (not (null before-lst)))    
+                    (append before-lst (cons elem Nil)))
+           ((null lst) (cons elem Nil))
+           ((< elem (car lst)) 
+                    (append before-lst (cons elem Nil) lst))
+           (T (insert-elem2 (cdr lst) elem 
+                    (append before-lst (cons (car lst) Nil))))))
+
+(defun sort-lst2 (lst)
+     (cond 
+            ((null lst) Nil)
+            (T (reduce #'(lambda (sorted x)
+                         (insert-elem2 sorted x))
+                    lst :initial-value '(0))
+                    
+                    )))
+
+(print (sort-lst '(7 6 4 2 4 54 4 )))
+(print (sort-lst2 '(7 6 4 2 4 54 4 )))
+;; (print (sort-lst2 '(7)))
+
+(print '(1 2 3 4 5))
+(print '(NIL 1 2 3 4 5))

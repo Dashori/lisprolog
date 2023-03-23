@@ -6,7 +6,7 @@
 (defun not-all-numbers (lst num)
     (mapcar #'(lambda (x)
                 (cond 
-                    ((null x) NIL)
+                    ((not x) NIL)
                     ((numberp x) (* x num))
                     ((listp x) (not-all-numbers x num))
                     (T x)))
