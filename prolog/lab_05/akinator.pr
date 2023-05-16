@@ -1,0 +1,117 @@
+:- use_module(library(dif)).	% Sound inequality
+:- use_module(library(clpfd)).	% Finite domain constraints
+:- use_module(library(clpb)).	% Boolean constraints
+:- use_module(library(chr)).	% Constraint Handling Rules
+:- use_module(library(when)).	% Coroutining
+:- use_module(library(clpq)).  % Constraints over rational numbers
+:- use_module(library(persistency)).
+
+
+start :-
+    write("Добро пожаловать в акинатор.\nЗагадайте персонажа, а я попытаюсь его отгадать!"),
+
+    guess(Name, Surname, Gender, Age, Country, Profession, IsAlive),
+
+    write("I think I figured it out. "),
+
+    person(Name2, Surname2, Gender, Age, Country, Profession, IsAlive),
+
+    write("Is it "),
+    write(Name2), write(" "),
+    write(Surname2), write("?"), nl,
+
+    read(Answer),
+    confirm(Answer), 
+    asserta(person(Name, Surname, Gender, Age, Country, Profession, IsAlive)).
+
+
+:- dynamic person/7.
+
+print_elements([]).
+print_elements([X|Xs]) :-
+    write(X),
+    (Xs == [] -> write('.'), nl ; write(', '), print_elements(Xs)).
+
+find :- 
+    findall(Name, (person(Name, _, _, NewAge, _, _, _), NewAge < 30), List),
+     print_elements(List).
+
+guess(Name, Surname, Gender, Age, Country, Profession, IsAlive) :-
+    ask_IsAlive(IsAlive),
+    ask_gender(Gender),
+    is_greater(10, Age),
+    ask_name(Name),
+    ask_surname(Surname),
+    ask_country(Country),
+    ask_profession(Profession),
+ 
+    findall(Name2, (person(Name2, _, Gender2, Age2, _, _, IsAlive2), Age2 <= Age, Age2 > Age - 10, IsAlive2 = IsAlive, Gender2 = Gender), List),
+
+    write('START'),
+
+    print_elements(List),
+    
+    write('END').
+    %write(Name), write(Surname), write(Gender), write(Age), write(Profession), write(IsAlive).
+
+
+%Name, Surname, Gender, Age, Country, Profession, IsAlive
+person('Leonardo', 'DiCaprio', 'male', 48, 'USA', 'actor', true).
+person('Dasha', 'Chepigo', 'female', 21, 'Russia', 'student', 'true').
+person(a, a, a, 31, a, a, a).
+
+
+print:-
+    listing(person/7).
+
+
+ask_name(Name) :-
+    write("What is the person's name?"), nl,
+    read(Name).
+
+ask_surname(Surname) :-
+    write("What is the person's surname?"), nl,
+    read(Surname).
+
+ask_gender(Gender) :-
+    write("Ваш персонаж мужского пола? (да/нет)"), nl,
+    read(Answer), 
+    change_gender(Answer, Gender).
+
+change_gender(да, male).
+change_gender(нет, female).
+
+
+is_greater(X, Next) :-
+    write('Ваш персонаж старше чем'),
+    write(X),
+    write('? (да/нет)'),
+    read(Response),
+    (Response = нет, Next = X ; (X = 110 , Response \= да)) ,
+    !.
+    
+is_greater(X, Next2) :-
+    Next is X + 10,
+    is_greater(Next, Next2).
+
+
+ask_country(Country) :-
+    write("What is the person's country?"), nl,
+    read(Country).
+
+ask_profession(Profession) :-
+    write("What is the person's profession?"), nl,
+    read(Profession).
+
+ask_IsAlive(IsAlive) :-
+    write("Ваш персонаж жив сейчас? (да/нет)"), nl,
+    read(Answer), 
+    change_alive(Answer, IsAlive). 
+
+
+change_alive(да, true).
+change_alive(нет, false).
+
+
+confirm(yes) :- write("Yay! I'm smart!").
+confirm(no) :- write("Oops, I will try harder next time.").
