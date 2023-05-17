@@ -21,7 +21,6 @@ ask_country(UserCountry) :-
     country(Country),
     format("Ваш персонаж из страны ~w? (да/нет)", [Country]),
     read(Answer),
-    write(Answer),
     (   Answer = да -> UserCountry = Country, !;   
         Answer = нет -> fail;
         write("Введите ответ да или нет."), nl,
@@ -33,7 +32,6 @@ ask_unknown_country(Country) :-
     write("Из какой страны ваш персонаж? "), nl,
     read(Answer),
     Country = Answer,
-    write(Answer),
     assertz(country(Country))
     .
 
@@ -63,7 +61,7 @@ iterate_helper([Item | Rest], X) :-
     write('Я прав? (да/нет) '),
     read(Response),
     (Response == нет ->
-        !, iterate_helper(Rest), X = нет;
+        !, iterate_helper(Rest, X), X = нет;
         true, X = да).
 
 
@@ -72,15 +70,12 @@ start :-
 
     guess(Gender, Age, Country, Profession, IsAlive),
 
-    write('aaaa'),
-
     findall( (Name1, Surname1), (person(Name1, Surname1, Gender2, NewAge, Country2, Profession2, IsAlive2), 
     NewAge =< Age, NewAge > Age - 10, Gender = Gender2, IsAlive = IsAlive2, Country = Country2,
     Profession = Profession2
     ), 
     List),
 
-    write('bbbb'),
     iterate_helper(List, X),
     (
         X = да, write('Спасибо за игру!');
@@ -89,21 +84,9 @@ start :-
         read(Name),
         write('Введите фамилию кого вы загадывали:'),
         read(Surname),
-        asserta(person(Name, Surname, Gender, Age, Country, Profession, IsAlive))
+        assertz(person(Name, Surname, Gender, Age, Country, Profession, IsAlive)),
+        write('Ваш персонаж добавлен в базу знаний!'), nl
     ).
-
-    %print_elements(List),
-
-    %write(X),
-    
-    %write("Я думаю, что это: "),
-
-
-    %write('Я прав?'),
-    %read(Answer),
-    %confirm(Answer), 
-    %asserta(person(Name, Surname, Gender, Age, Country, Profession, IsAlive)).
-
 
 :- dynamic person/7.
 
@@ -117,22 +100,9 @@ guess(Gender, Age, Country, Profession, IsAlive) :-
     ask_IsAlive(IsAlive),
     ask_gender(Gender),
     get_user_country(Country),
-    write(Country),
-   
     is_greater(10, Age),
-    get_user_profession(Profession),
-    write(Profession),
-    write('what the hell')
-
-    %ask_profession(Profession),
+    get_user_profession(Profession)
     .
-    %write(Country).
- 
-    
-    %write(Name), write(Surname), write(Gender), write(Age), write(Profession), write(IsAlive).
-
-
-%Name, Surname, Gender, Age, Country, Profession, IsAlive
 
 get_ask_IsAlive(IsAlive) :-
     ask_IsAlive(IsAlive),
@@ -190,14 +160,13 @@ is_greater(X, Next2) :-
 
 :- dynamic(profession/1).
 
-% Начальный список стран
+% Начальный список профессий
 profession('музыкант').
-%profession('фигурист').
-%profession('актер').
+profession('актер').
 %profession('политик').
-%profession('студент').
+profession('студент').
 
-% Предикат, который спрашивает пользователь из какой страны он является и проверяет ответ: да или нет
+% Предикат, который спрашивает пользователя по поводу профессии и проверяет ответ: да или нет
 ask_profession(UserProfession) :-
     profession(Profession),
     format("Ваш персонаж по профессии ~w? (да/нет)", [Profession]),
@@ -208,18 +177,13 @@ ask_profession(UserProfession) :-
         ask_profession(UserProfession)
     ).
 
-% Предикат, запрашивающий страну у пользователя, если предположения оказались не верными
+% Предикат, запрашивающий профессию у пользователя, если предположения оказались не верными
 ask_unknown_profession(Profession) :-
     write("Кто ваш персонаж по профессии? "), nl,
     read(Answer),
     Profession = Answer,
-    write(Profession),
     assertz(profession(Profession)).
 
 % Главная функция для получения профессии 
 get_user_profession(UserProfession) :-
-    (ask_profession(UserProfession), !;  ask_unknown_profession(UserProfession), write(UserProfession)).
-
-
-confirm(да) :- write("Спасибо за игру!").
-confirm(нет) :- write("Упc.").
+    (ask_profession(UserProfession), !;  ask_unknown_profession(UserProfession)).
