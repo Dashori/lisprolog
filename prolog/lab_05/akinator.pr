@@ -4,25 +4,105 @@
 :- use_module(library(chr)).	% Constraint Handling Rules
 :- use_module(library(when)).	% Coroutining
 :- use_module(library(clpq)).  % Constraints over rational numbers
+:- use_module(library(atom)).
 :- use_module(library(persistency)).
 
 
-start :-
-    write("Добро пожаловать в акинатор.\nЗагадайте персонажа, а я попытаюсь его отгадать!"),
+:- dynamic(country/1).
 
-    guess(Name, Surname, Gender, Age, Country, Profession, IsAlive),
+% Начальный список стран
+country('канада').
+%country('россия').
+%country('сша').
+%country('китай').
 
-    write("I think I figured it out. "),
-
-    person(Name2, Surname2, Gender, Age, Country, Profession, IsAlive),
-
-    write("Is it "),
-    write(Name2), write(" "),
-    write(Surname2), write("?"), nl,
-
+% Предикат, который спрашивает пользователь из какой страны он является и проверяет ответ: да или нет
+ask_country(UserCountry) :-
+    country(Country),
+    format("Ваш персонаж из страны ~w? (да/нет)", [Country]),
     read(Answer),
-    confirm(Answer), 
-    asserta(person(Name, Surname, Gender, Age, Country, Profession, IsAlive)).
+    write(Answer),
+    (   Answer = да -> UserCountry = Country, !;   
+        Answer = нет -> fail;
+        write("Введите ответ да или нет."), nl,
+        ask_country(UserCountry)
+    ).
+
+% Предикат, запрашивающий страну у пользователя, если предположения оказались не верными
+ask_unknown_country(Country) :-
+    write("Из какой страны ваш персонаж? "), nl,
+    read(Answer),
+    Country = Answer,
+    write(Answer),
+    assertz(country(Country))
+    .
+
+% Главная функция для получения страны пользователя
+get_user_country(UserCountry) :-
+    (ask_country(UserCountry), !;  ask_unknown_country(UserCountry)).
+
+
+person('Leonardo', 'DiCaprio', 'male', 48, 'сша', 'актер', true).
+person('Dasha', 'Chepigo', 'female', 21, 'россия', 'студент', 'true').
+person('Sergey', 'Shnurov', 'male', 50, 'россия', 'музыкант', 'true').
+person('Sergey1', 'Shnurov1', 'male', 50, 'россия', 'музыкант', 'true').
+person('Sergey2', 'Shnurov2', 'female', 50, 'россия', 'музыкант', 'true').
+
+
+iterate(List) :-
+    iterate_helper(List).
+
+iterate_helper([], X) :- 
+    X = нет
+.
+iterate_helper([Item | Rest], X) :-
+    write("Я думаю, что это: "),
+    write(Item), 
+    nl,
+    repeat,
+    write('Я прав? (да/нет) '),
+    read(Response),
+    (Response == нет ->
+        !, iterate_helper(Rest), X = нет;
+        true, X = да).
+
+
+start :-
+    write("Добро пожаловать в акинатор.\nЗагадайте персонажа, а я попытаюсь его отгадать!\n"),
+
+    guess(Gender, Age, Country, Profession, IsAlive),
+
+    write('aaaa'),
+
+    findall( (Name1, Surname1), (person(Name1, Surname1, Gender2, NewAge, Country2, Profession2, IsAlive2), 
+    NewAge =< Age, NewAge > Age - 10, Gender = Gender2, IsAlive = IsAlive2, Country = Country2,
+    Profession = Profession2
+    ), 
+    List),
+
+    write('bbbb'),
+    iterate_helper(List, X),
+    (
+        X = да, write('Спасибо за игру!');
+        X = нет, write('К сожалению я не смог угадать вашего персонажа'), nl,
+        write('Введите имя кого вы загадывали:'),
+        read(Name),
+        write('Введите фамилию кого вы загадывали:'),
+        read(Surname),
+        asserta(person(Name, Surname, Gender, Age, Country, Profession, IsAlive))
+    ).
+
+    %print_elements(List),
+
+    %write(X),
+    
+    %write("Я думаю, что это: "),
+
+
+    %write('Я прав?'),
+    %read(Answer),
+    %confirm(Answer), 
+    %asserta(person(Name, Surname, Gender, Age, Country, Profession, IsAlive)).
 
 
 :- dynamic person/7.
@@ -30,40 +110,56 @@ start :-
 print_elements([]).
 print_elements([X|Xs]) :-
     write(X),
-    (Xs == [] -> write('.'), nl ; write(', '), print_elements(Xs)).
+    (Xs == [] -> write('.'), nl ; write(' '), print_elements(Xs)).
 
-find :- 
-    findall(Name, (person(Name, _, _, NewAge, _, _, _), NewAge < 30), List),
-     print_elements(List).
 
-guess(Name, Surname, Gender, Age, Country, Profession, IsAlive) :-
+guess(Gender, Age, Country, Profession, IsAlive) :-
     ask_IsAlive(IsAlive),
     ask_gender(Gender),
+    get_user_country(Country),
+    write(Country),
+   
     is_greater(10, Age),
-    ask_name(Name),
-    ask_surname(Surname),
-    ask_country(Country),
-    ask_profession(Profession),
+    get_user_profession(Profession),
+    write(Profession),
+    write('what the hell')
+
+    %ask_profession(Profession),
+    .
+    %write(Country).
  
-    findall(Name2, (person(Name2, _, Gender2, Age2, _, _, IsAlive2), Age2 <= Age, Age2 > Age - 10, IsAlive2 = IsAlive, Gender2 = Gender), List),
-
-    write('START'),
-
-    print_elements(List),
     
-    write('END').
     %write(Name), write(Surname), write(Gender), write(Age), write(Profession), write(IsAlive).
 
 
 %Name, Surname, Gender, Age, Country, Profession, IsAlive
-person('Leonardo', 'DiCaprio', 'male', 48, 'USA', 'actor', true).
-person('Dasha', 'Chepigo', 'female', 21, 'Russia', 'student', 'true').
-person(a, a, a, 31, a, a, a).
 
+get_ask_IsAlive(IsAlive) :-
+    ask_IsAlive(IsAlive),
+    write(IsAlive).
+
+
+ask_IsAlive(IsAlive) :-
+    write('Ваш персонаж жив сейчас? (да/нет)'),
+    read(Answer),
+    (   Answer = 'да' -> IsAlive = true, true, !;   
+        Answer = 'нет' -> IsAlive = false, true, !;
+        write("Введите ответ да или нет."), nl,
+        ask_IsAlive(IsAlive)
+    ), !.
+
+
+ask_gender(Gender) :-
+    write('Ваш персонаж мужского пола? (да/нет)'),
+    read(Answer), 
+    (   Answer = да -> Gender = 'male';   
+        Answer = нет -> Gender = 'female';
+        write("Введите ответ да или нет."), nl,
+        ask_gender(Gender)
+    ).
 
 print:-
     listing(person/7).
-
 
 ask_name(Name) :-
     write("What is the person's name?"), nl,
@@ -73,45 +169,57 @@ ask_surname(Surname) :-
     write("What is the person's surname?"), nl,
     read(Surname).
 
-ask_gender(Gender) :-
-    write("Ваш персонаж мужского пола? (да/нет)"), nl,
-    read(Answer), 
-    change_gender(Answer, Gender).
-
-change_gender(да, male).
-change_gender(нет, female).
-
 
 is_greater(X, Next) :-
-    write('Ваш персонаж старше чем'),
+    write('Ваш персонаж старше '),
     write(X),
     write('? (да/нет)'),
     read(Response),
-    (Response = нет, Next = X ; (X = 110 , Response \= да)) ,
-    !.
+    (   Response = нет, Next = X; 
+        (X = 110 , Response \= да)
+        %Response = да -> true, !;
+        %write("Введите ответ да или нет."), nl,
+        %is_greater(X, Next)
+    ), !.
     
 is_greater(X, Next2) :-
     Next is X + 10,
     is_greater(Next, Next2).
 
 
-ask_country(Country) :-
-    write("What is the person's country?"), nl,
-    read(Country).
 
-ask_profession(Profession) :-
-    write("What is the person's profession?"), nl,
-    read(Profession).
+:- dynamic(profession/1).
 
-ask_IsAlive(IsAlive) :-
-    write("Ваш персонаж жив сейчас? (да/нет)"), nl,
-    read(Answer), 
-    change_alive(Answer, IsAlive). 
+% Начальный список стран
+profession('музыкант').
+%profession('фигурист').
+%profession('актер').
+%profession('политик').
+%profession('студент').
+
+% Предикат, который спрашивает пользователь из какой страны он является и проверяет ответ: да или нет
+ask_profession(UserProfession) :-
+    profession(Profession),
+    format("Ваш персонаж по профессии ~w? (да/нет)", [Profession]),
+    read(Answer),
+    (   Answer = да -> UserProfession = Profession, !;   
+        Answer = нет -> fail;
+        write("Введите ответ да или нет."), nl,
+        ask_profession(UserProfession)
+    ).
+
+% Предикат, запрашивающий страну у пользователя, если предположения оказались не верными
+ask_unknown_profession(Profession) :-
+    write("Кто ваш персонаж по профессии? "), nl,
+    read(Answer),
+    Profession = Answer,
+    write(Profession),
+    assertz(profession(Profession)).
+
+% Главная функция для получения профессии 
+get_user_profession(UserProfession) :-
+    (ask_profession(UserProfession), !;  ask_unknown_profession(UserProfession), write(UserProfession)).
 
 
-change_alive(да, true).
-change_alive(нет, false).
-
-
-confirm(yes) :- write("Yay! I'm smart!").
-confirm(no) :- write("Oops, I will try harder next time.").
+confirm(да) :- write("Спасибо за игру!").
+confirm(нет) :- write("Упc.").
