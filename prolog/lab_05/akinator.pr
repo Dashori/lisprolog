@@ -10,13 +10,12 @@
 
 :- dynamic(country/1).
 
-% Начальный список стран
 country('канада').
 %country('россия').
 %country('сша').
 %country('китай').
 
-% Предикат, который спрашивает пользователь из какой страны он является и проверяет ответ: да или нет
+
 ask_country(UserCountry) :-
     country(Country),
     format("Ваш персонаж из страны ~w? (да/нет)", [Country]),
@@ -27,15 +26,13 @@ ask_country(UserCountry) :-
         ask_country(UserCountry)
     ).
 
-% Предикат, запрашивающий страну у пользователя, если предположения оказались не верными
 ask_unknown_country(Country) :-
+    write("К сожалению мой список стран пока маленький"), nl,
     write("Из какой страны ваш персонаж? "), nl,
     read(Answer),
     Country = Answer,
-    assertz(country(Country))
-    .
+    assertz(country(Country)).
 
-% Главная функция для получения страны пользователя
 get_user_country(UserCountry) :-
     (ask_country(UserCountry), !;  ask_unknown_country(UserCountry)).
 
@@ -45,7 +42,6 @@ person('Dasha', 'Chepigo', 'female', 21, 'россия', 'студент', 'true
 person('Sergey', 'Shnurov', 'male', 50, 'россия', 'музыкант', 'true').
 person('Sergey1', 'Shnurov1', 'male', 50, 'россия', 'музыкант', 'true').
 person('Sergey2', 'Shnurov2', 'female', 50, 'россия', 'музыкант', 'true').
-
 
 iterate(List) :-
     iterate_helper(List).
@@ -67,13 +63,13 @@ iterate_helper([Item | Rest], X) :-
 
 start :-
     write("Добро пожаловать в акинатор.\nЗагадайте персонажа, а я попытаюсь его отгадать!\n"),
+    write("Только вводите все слова с маленькой буквы, так как я еще не умею в большие и ставьте точки.\n"),
 
     guess(Gender, Age, Country, Profession, IsAlive),
 
     findall( (Name1, Surname1), (person(Name1, Surname1, Gender2, NewAge, Country2, Profession2, IsAlive2), 
     NewAge =< Age, NewAge > Age - 10, Gender = Gender2, IsAlive = IsAlive2, Country = Country2,
-    Profession = Profession2
-    ), 
+    Profession = Profession2), 
     List),
 
     iterate_helper(List, X),
@@ -90,19 +86,12 @@ start :-
 
 :- dynamic person/7.
 
-print_elements([]).
-print_elements([X|Xs]) :-
-    write(X),
-    (Xs == [] -> write('.'), nl ; write(' '), print_elements(Xs)).
-
-
 guess(Gender, Age, Country, Profession, IsAlive) :-
     ask_IsAlive(IsAlive),
     ask_gender(Gender),
     get_user_country(Country),
     is_greater(10, Age),
-    get_user_profession(Profession)
-    .
+    get_user_profession(Profession).
 
 get_ask_IsAlive(IsAlive) :-
     ask_IsAlive(IsAlive),
@@ -129,15 +118,9 @@ ask_gender(Gender) :-
     ).
 
 print:-
-    listing(person/7).
-
-ask_name(Name) :-
-    write("What is the person's name?"), nl,
-    read(Name).
-
-ask_surname(Surname) :-
-    write("What is the person's surname?"), nl,
-    read(Surname).
+    listing(person/7),
+    listing(country/1),
+    listing(profession/1).
 
 
 is_greater(X, Next) :-
@@ -157,16 +140,13 @@ is_greater(X, Next2) :-
     is_greater(Next, Next2).
 
 
-
 :- dynamic(profession/1).
 
-% Начальный список профессий
 profession('музыкант').
 profession('актер').
 %profession('политик').
 profession('студент').
 
-% Предикат, который спрашивает пользователя по поводу профессии и проверяет ответ: да или нет
 ask_profession(UserProfession) :-
     profession(Profession),
     format("Ваш персонаж по профессии ~w? (да/нет)", [Profession]),
@@ -177,13 +157,28 @@ ask_profession(UserProfession) :-
         ask_profession(UserProfession)
     ).
 
-% Предикат, запрашивающий профессию у пользователя, если предположения оказались не верными
 ask_unknown_profession(Profession) :-
     write("Кто ваш персонаж по профессии? "), nl,
     read(Answer),
     Profession = Answer,
     assertz(profession(Profession)).
 
-% Главная функция для получения профессии 
 get_user_profession(UserProfession) :-
     (ask_profession(UserProfession), !;  ask_unknown_profession(UserProfession)).
+
+print_all :- 
+    listing.
+
+
+save(Filename) :-
+    open(Filename, write, Stream),
+    set_output(Stream), % Перенаправляем вывод на этот поток
+    listing, % Выводим всю базу знаний
+    set_output(user_output), % Вернуть вывод на стандартный поток вывода
+    close(Stream). % Закрываем файл
+
+load(Filename) :-
+    consult(Filename),
+    dynamic(country/1),
+    dynamic(profession/1),
+    dynamic(person/7).
