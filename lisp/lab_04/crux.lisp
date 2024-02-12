@@ -1,3 +1,5 @@
+ ;; загадки!)
+
 (defun x () 9)
 (defvar x 'y)
 (defvar y 'x)
