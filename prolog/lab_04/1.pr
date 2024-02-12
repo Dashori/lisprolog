@@ -1,0 +1,89 @@
+% Constraint Logic Programming
+:- use_module(library(dif)). % Sound inequality
+:- use_module(library(clpfd)). % Finite domain constraints
+:- use_module(library(clpb)). % Boolean constraints
+:- use_module(library(chr)). % Constraint Handling Rules
+:- use_module(library(when)). % Coroutining
+%:- use_module(library(clpq)).  % Constraints over rational numbers
+:- use_module(library(persistency)).
+
+
+:-dynamic(fac/2).
+
+
+fac(88,8).
+fac(N, X) :- fac(N, X, 1).
+fac(1, X, X) :- !.
+fac(N, X, Acc) :- N #> 0,
+        N1 #= N - 1,
+        Acc1 #= N * Acc,
+        Acc #=< X,
+        fac(N1, X, Acc1)).
+
+
+fib(N, X) :- fib(N, X, 0, 1).
+fib(1, X, _, X) :- !.
+fib(N, X, Prev1, Prev2) :-
+    N #> 1,
+    NewN #= N - 1,
+    NewPrev2 #= Prev1 + Prev2,
+    fib(NewN, X, Prev2, NewPrev2).
+
+
+
+может быть все что ниже -- заметки..
+
+
+fact(N, R) :- fact(N, R, 1).
+fact(1, R, R) :- !.
+fact(N, R, Acc) :-
+    N #> 0,
+    NewN #= N - 1,
+    NewAcc #= Acc * N,
+    Acc #< R,
+    fact(NewN, R, NewAcc).
+
+fib(N, R) :- fib(N, R, 0, 1).
+fib(1, R, _, R) :- !.
+fib(N, R, Prev1, Prev2) :-
+    N #> 1,
+    NewN #= N - 1,
+    NewPrev2 #= Prev1 + Prev2,
+    fib(NewN, R, Prev2, NewPrev2).
+
+
+-----------------------------------
+
+fac(0,1).
+
+fac(N,X):- N > 0, N2 is N - 1, fac(N2, X2), X is X2 * N.
+
+fib(0, 1) :- !.
+fib(1, 1) :- !.
+fib(N, X) :- fib(N, 0, 1, X).
+fib(0, N, _, N) :- !.
+
+fib(N, Prev1, Prev2, X) :- N > 0,
+    NewPrev2 is Prev1 + Prev2, 
+    N1 is N - 1,
+    fib(N1, Prev2, NewPrev2, X).
+
+-----------------------------------
+
+fib1(0, AccA, _, AccA) :- !.
+fib1(1, _, AccB, AccB) :- !.
+fib1(N, AccA, AccB, Res) :- N #> 1,
+          AccA #< Res,
+          Res #> 0,
+          AccB1 #= AccA + AccB,
+          N1 #= N - 1,
+          fib1(N1, AccB, AccB1, Res).
+
+%fib(N, Res) :- fib1(N, 0, 1, Res).
+
+
+
+%fib(N, Res) :- N #< 0,
+%    N1 #= -N,
+%    Res1 #= -Res,
+%    fib1(N1, 0, 1, Res1), !.

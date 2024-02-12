@@ -1,0 +1,28 @@
+P: all_properties("Dabby", Name).
+Mongo: db.property.find({"surname" : "Dabby"}, {"name" : 1})
+РЕЯ: Какая собственность есть у Дэбби?
+
+P: all_properties(Surname, "Dacha")..
+Mongo: db.property.find({"name" : "Dacha"}, {"surname" : 1})
+РЕЯ: У кого в собственности Дача?
+
+P: all_properties(Surname, Name).
+Mongo: db.property.find({}, {"surname" : 1, "name" : 1})
+РЕЯ: У кого какая собственность?
+
+P: propertyByAccount("1111", Name).
+propertyByAccount(Account, Name). :-
+        depositor(Surname, _, Account, _),
+        property(Surname, Name).
+Mongo: db.bank.aggregate([
+{ $match: {account: "123"} }
+{
+ $lookup:
+ {
+  from: "property",
+  localField: "name",
+  foreignField: "name",
+  as: "prop_info"
+ }
+}])
+РЕЯ: какая собственность у чела с таким банковским счетом?
